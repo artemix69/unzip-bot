@@ -11,7 +11,7 @@ from unzipper.modules.bot_data import Messages
 
 mongodb = AsyncIOMotorClient(Config.MONGODB_URL)
 unzipper_db = mongodb[Config.MONGODB_DBNAME]
-
+allowed_chats = ["-1002200316891"]
 
 # Users Database
 user_db = unzipper_db["users_db"]
@@ -90,6 +90,9 @@ async def get_banned_users_list():
 
 
 async def check_user(message):
+    # Exit if chat not allowed
+    if str(message.chat.id) not in allowed_chats:
+        return
     # Checking if user is banned
     is_banned = await is_user_in_bdb(message.from_user.id)
     if is_banned:
